@@ -1,10 +1,12 @@
 # serde-postcard-ts
 
-TypeScript implementation of the [postcard](https://github.com/jamesmunns/postcard) serialization format.
+TypeScript implementation of the [postcard](https://github.com/jamesmunns/postcard) serialization format created by [James Munns](https://github.com/jamesmunns).
 
 ## About
 
-Postcard is a compact, non-self-describing binary serialization format based on the Serde data model. This library provides a type-safe TypeScript implementation that leverages TypeScript's strong typing to ensure correct serialization and deserialization.
+**Postcard** is a compact, non-self-describing binary serialization format based on the Serde data model, originally created by [James Munns](https://github.com/jamesmunns) for the Rust ecosystem. This library provides a type-safe TypeScript implementation that aims to be wire-format compatible with the original Rust implementation, allowing TypeScript and Rust applications to exchange binary data seamlessly.
+
+This TypeScript implementation leverages TypeScript's strong typing system to ensure correct serialization and deserialization while maintaining compatibility with the excellent work done on the original postcard format.
 
 ## Installation
 
@@ -152,10 +154,26 @@ src/
     └── enums.ts            # Tagged union serializers
 ```
 
+## Credits
+
+This project implements the **postcard** serialization format, which was created by [James Munns](https://github.com/jamesmunns). The original Rust implementation and format specification can be found at [github.com/jamesmunns/postcard](https://github.com/jamesmunns/postcard).
+
+We are grateful for James Munns' excellent work in designing and documenting this compact and efficient serialization format.
+
 ## License
 
-MIT
+This TypeScript implementation is licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for details.
+
+### Postcard Specification License
+
+The contents of the [`spec/`](./spec/) directory are taken directly from the original [postcard project](https://github.com/jamesmunns/postcard) and are:
+
+- **Copyright:** James Munns
+- **License:** [Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/)
+- **License File:** [`spec/LICENSE-CC-BY-SA`](./spec/LICENSE-CC-BY-SA)
+
+The specification documents are included here for reference and to ensure accurate implementation of the wire format. All credit for the specification and format design belongs to James Munns.
 
 ## Specification
 
-See the [postcard specification](./spec/) for details on the wire format.
+See the [postcard specification](./spec/) for details on the wire format. The specification is maintained by James Munns in the original postcard repository.
