@@ -176,17 +176,25 @@ export type Schema =
   | CharSchema
   | StringSchema
   | BytesSchema
-  | OptionSchema<Schema>
   | UnitSchema
   | UnitStructSchema
-  | NewtypeStructSchema<Schema>
-  | SeqSchema<Schema>
-  | TupleSchema<readonly Schema[]>
-  | TupleStructSchema<readonly Schema[]>
-  | MapSchema<Schema, Schema>
-  | StructSchema<Record<string, Schema>>
+  // Use structural typing for all generic schema types to handle variance
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "enum"; readonly name: string; readonly variants: Record<string, any> }; // Accept any enum structurally
+  | { readonly kind: "option"; readonly inner: any }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  | { readonly kind: "newtype_struct"; readonly name: string; readonly inner: any }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  | { readonly kind: "seq"; readonly item: any }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  | { readonly kind: "tuple"; readonly items: readonly any[] }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  | { readonly kind: "tuple_struct"; readonly name: string; readonly items: readonly any[] }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  | { readonly kind: "map"; readonly key: any; readonly value: any }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  | { readonly kind: "struct"; readonly fields: Record<string, any> }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  | { readonly kind: "enum"; readonly name: string; readonly variants: Record<string, any> };
 
 // ============================================================================
 // TYPE INFERENCE

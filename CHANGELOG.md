@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2025-10-26
+
+### Fixed
+
+- **CRITICAL**: Fixed TypeScript variance issue that caused `InferType<T>` to return `never` for all generic schema types. The v0.1.1 fix only addressed schema assignment but missed the primary API (`InferType`) which uses generic constraints. This was a blocking bug that made the library unusable for type inference on complex schemas.
+- Applied structural typing to all generic schema types in the Schema union: `OptionSchema`, `NewtypeStructSchema`, `SeqSchema`, `TupleSchema`, `TupleStructSchema`, `MapSchema`, and `StructSchema`.
+- Updated serializer and deserializer to properly handle the new structural types with appropriate type casts.
+
+### Added
+
+- Comprehensive `InferType` tests for all generic schema types to prevent regression.
+- Added 22 new tests (total now 345 tests, was 323).
+- Added `npm run type-check:tests` script to verify type inference works correctly.
+
+### Changed
+
+- Schema union type now uses structural typing with `any` for all generic type parameters to handle TypeScript variance correctly.
+- All generic schemas can now be properly used with `InferType<T>` to get correct TypeScript types.
+
 ## [0.1.1] - 2025-10-26
 
 ### Fixed
@@ -35,5 +54,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rust test fixtures for cross-platform compatibility verification
 - Comprehensive documentation and usage examples
 
+[0.1.2]: https://github.com/variegated-coffee/serde-postcard-ts/releases/tag/v0.1.2
 [0.1.1]: https://github.com/variegated-coffee/serde-postcard-ts/releases/tag/v0.1.1
 [0.1.0]: https://github.com/variegated-coffee/serde-postcard-ts/releases/tag/v0.1.0

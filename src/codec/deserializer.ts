@@ -130,23 +130,23 @@ export function tryDeserialize<S extends Schema>(
     case "bytes":
       return deserializeBytes(schema, data, offset) as any;
     case "option":
-      return deserializeOption(schema, data, offset) as any;
+      return deserializeOption(schema as OptionSchema<Schema>, data, offset) as any;
     case "unit":
       return deserializeUnit(schema, data, offset) as any;
     case "unit_struct":
       return deserializeUnitStruct(schema, data, offset) as any;
     case "newtype_struct":
-      return deserializeNewtypeStruct(schema, data, offset) as any;
+      return deserializeNewtypeStruct(schema as NewtypeStructSchema<Schema>, data, offset) as any;
     case "seq":
-      return deserializeSeq(schema, data, offset) as any;
+      return deserializeSeq(schema as SeqSchema<Schema>, data, offset) as any;
     case "tuple":
-      return deserializeTuple(schema, data, offset) as any;
+      return deserializeTuple(schema as TupleSchema<readonly Schema[]>, data, offset) as any;
     case "tuple_struct":
-      return deserializeTupleStruct(schema, data, offset) as any;
+      return deserializeTupleStruct(schema as TupleStructSchema<readonly Schema[]>, data, offset) as any;
     case "map":
-      return deserializeMap(schema, data, offset) as any;
+      return deserializeMap(schema as MapSchema<Schema, Schema>, data, offset) as any;
     case "struct":
-      return deserializeStruct(schema, data, offset) as any;
+      return deserializeStruct(schema as StructSchema<Record<string, Schema>>, data, offset) as any;
     case "enum":
       return deserializeEnum(schema as EnumSchema<Record<string, EnumVariant>>, data, offset) as any;
     default: {

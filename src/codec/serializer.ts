@@ -116,23 +116,23 @@ export function trySerialize<S extends Schema>(
     case "bytes":
       return serializeBytes(schema, value as any);
     case "option":
-      return serializeOption(schema, value as any);
+      return serializeOption(schema as OptionSchema<Schema>, value as any);
     case "unit":
       return serializeUnit(schema, value as any);
     case "unit_struct":
       return serializeUnitStruct(schema, value as any);
     case "newtype_struct":
-      return serializeNewtypeStruct(schema, value as any);
+      return serializeNewtypeStruct(schema as NewtypeStructSchema<Schema>, value as any);
     case "seq":
-      return serializeSeq(schema, value as any);
+      return serializeSeq(schema as SeqSchema<Schema>, value as any);
     case "tuple":
-      return serializeTuple(schema, value as any);
+      return serializeTuple(schema as TupleSchema<readonly Schema[]>, value as any);
     case "tuple_struct":
-      return serializeTupleStruct(schema, value as any);
+      return serializeTupleStruct(schema as TupleStructSchema<readonly Schema[]>, value as any);
     case "map":
-      return serializeMap(schema, value as any);
+      return serializeMap(schema as MapSchema<Schema, Schema>, value as any);
     case "struct":
-      return serializeStruct(schema, value as any);
+      return serializeStruct(schema as StructSchema<Record<string, Schema>>, value as any);
     case "enum":
       return serializeEnum(schema as EnumSchema<Record<string, EnumVariant>>, value as any);
     default: {

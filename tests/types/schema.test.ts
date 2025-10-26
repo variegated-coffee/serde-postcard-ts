@@ -21,8 +21,10 @@ import {
   option,
   seq,
   tuple,
+  tupleStruct,
   struct,
   map,
+  newtypeStruct,
   enumType,
   unitVariant,
   newtypeVariant,
@@ -315,5 +317,149 @@ describe("Schema type compatibility", () => {
 
     expect(wrapperSchema.kind).toBe("struct");
     expect(wrapperSchema.fields.message.kind).toBe("enum");
+  });
+});
+
+describe("Generic schema type variance", () => {
+  it("should allow OptionSchema to be assigned to Schema type", () => {
+    const optionSchema = option(string());
+    const schema: Schema = optionSchema;
+    expect(schema.kind).toBe("option");
+  });
+
+  it("should allow SeqSchema to be assigned to Schema type", () => {
+    const seqSchema = seq(u32());
+    const schema: Schema = seqSchema;
+    expect(schema.kind).toBe("seq");
+  });
+
+  it("should allow MapSchema to be assigned to Schema type", () => {
+    const mapSchema = map(string(), u32());
+    const schema: Schema = mapSchema;
+    expect(schema.kind).toBe("map");
+  });
+
+  it("should allow StructSchema to be assigned to Schema type", () => {
+    const structSchema = struct({ name: string(), age: u32() });
+    const schema: Schema = structSchema;
+    expect(schema.kind).toBe("struct");
+  });
+
+  it("should allow TupleSchema to be assigned to Schema type", () => {
+    const tupleSchema = tuple(string(), u32(), bool());
+    const schema: Schema = tupleSchema;
+    expect(schema.kind).toBe("tuple");
+  });
+
+  it("should allow TupleStructSchema to be assigned to Schema type", () => {
+    const tupleStructSchema = tupleStruct("Point", u32(), u32());
+    const schema: Schema = tupleStructSchema;
+    expect(schema.kind).toBe("tuple_struct");
+  });
+
+  it("should allow NewtypeStructSchema to be assigned to Schema type", () => {
+    const newtypeSchema = newtypeStruct("UserId", u32());
+    const schema: Schema = newtypeSchema;
+    expect(schema.kind).toBe("newtype_struct");
+  });
+
+  it("should allow generic schemas in Schema arrays", () => {
+    const schemas: Schema[] = [
+      option(string()),
+      seq(u32()),
+      map(string(), u32()),
+      struct({ x: u32() }),
+      tuple(bool(), string()),
+      tupleStruct("Pair", i32(), i32()),
+      newtypeStruct("UserId", u64()),
+    ];
+    expect(schemas).toHaveLength(7);
+    expect(schemas[0]?.kind).toBe("option");
+    expect(schemas[1]?.kind).toBe("seq");
+    expect(schemas[2]?.kind).toBe("map");
+  });
+
+  it("should allow generic schemas as function parameters", () => {
+    function processSchema(schema: Schema): string {
+      return schema.kind;
+    }
+    expect(processSchema(option(string()))).toBe("option");
+    expect(processSchema(seq(u32()))).toBe("seq");
+    expect(processSchema(map(string(), u32()))).toBe("map");
+    expect(processSchema(struct({ x: u32() }))).toBe("struct");
+  });
+
+  it("should allow nested generic schemas", () => {
+    const nested1 = option(seq(string()));
+    const schema1: Schema = nested1;
+    expect(schema1.kind).toBe("option");
+
+    const nested2 = struct({
+      data: seq(u32()),
+      metadata: map(string(), string()),
+    });
+    const schema2: Schema = nested2;
+    expect(schema2.kind).toBe("struct");
+  });
+
+  it("should allow InferType to work on StructSchema", () => {
+    const structSchema = struct({ name: string(), age: u32() });
+    type StructType = InferType<typeof structSchema>;
+
+    const value: StructType = { name: "test", age: 5 };
+    expect(value.name).toBe("test");
+    expect(value.age).toBe(5);
+  });
+
+  it("should allow InferType to work on SeqSchema", () => {
+    const seqSchema = seq(u32());
+    type SeqType = InferType<typeof seqSchema>;
+
+    const arr: SeqType = [1, 2, 3];
+    expect(arr).toHaveLength(3);
+  });
+
+  it("should allow InferType to work on OptionSchema", () => {
+    const optionSchema = option(string());
+    type OptionType = InferType<typeof optionSchema>;
+
+    const some: OptionType = "hello";
+    const none: OptionType = null;
+    expect(some).toBe("hello");
+    expect(none).toBeNull();
+  });
+
+  it("should allow InferType to work on MapSchema", () => {
+    const mapSchema = map(string(), u32());
+    type MapType = InferType<typeof mapSchema>;
+
+    const m: MapType = new Map([["a", 1], ["b", 2]]);
+    expect(m.size).toBe(2);
+  });
+
+  it("should allow InferType to work on TupleSchema", () => {
+    const tupleSchema = tuple(string(), u32(), bool());
+    type TupleType = InferType<typeof tupleSchema>;
+
+    const t: TupleType = ["test", 42, true];
+    expect(t[0]).toBe("test");
+    expect(t[1]).toBe(42);
+    expect(t[2]).toBe(true);
+  });
+
+  it("should allow InferType to work on nested schemas", () => {
+    const innerSchema = struct({ id: u32() });
+    const outerSchema = struct({
+      items: seq(innerSchema),
+      metadata: map(string(), string()),
+    });
+    type OuterType = InferType<typeof outerSchema>;
+
+    const value: OuterType = {
+      items: [{ id: 1 }, { id: 2 }],
+      metadata: new Map([["key", "value"]]),
+    };
+    expect(value.items).toHaveLength(2);
+    expect(value.metadata.size).toBe(1);
   });
 });
