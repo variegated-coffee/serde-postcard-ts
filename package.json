@@ -1,6 +1,6 @@
 {
   "name": "@variegated-coffee/serde-postcard-ts",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "TypeScript implementation of the postcard serialization format",
   "type": "module",
   "main": "./dist/index.js",

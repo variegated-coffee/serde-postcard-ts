@@ -147,7 +147,9 @@ export type EnumVariant =
   | TupleVariantSchema<readonly Schema[]>
   | StructVariantSchema<Record<string, Schema>>;
 
-export interface EnumSchema<V extends Record<string, EnumVariant>>
+export type EnumVariantRecord = Record<string, EnumVariant>;
+
+export interface EnumSchema<V extends EnumVariantRecord>
   extends BaseSchema<"enum", InferEnumType<V>> {
   readonly name: string;
   readonly variants: V;
@@ -183,7 +185,8 @@ export type Schema =
   | TupleStructSchema<readonly Schema[]>
   | MapSchema<Schema, Schema>
   | StructSchema<Record<string, Schema>>
-  | EnumSchema<Record<string, EnumVariant>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  | { readonly kind: "enum"; readonly name: string; readonly variants: Record<string, any> }; // Accept any enum structurally
 
 // ============================================================================
 // TYPE INFERENCE
@@ -343,7 +346,7 @@ export const structVariant = <T extends Record<string, Schema>>(
   fields,
 });
 
-export const enumType = <V extends Record<string, EnumVariant>>(
+export const enumType = <V extends EnumVariantRecord>(
   name: string,
   variants: V
 ): EnumSchema<V> => ({

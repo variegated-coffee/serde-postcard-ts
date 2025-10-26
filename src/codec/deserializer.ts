@@ -148,7 +148,7 @@ export function tryDeserialize<S extends Schema>(
     case "struct":
       return deserializeStruct(schema, data, offset) as any;
     case "enum":
-      return deserializeEnum(schema, data, offset) as any;
+      return deserializeEnum(schema as EnumSchema<Record<string, EnumVariant>>, data, offset) as any;
     default: {
       // Exhaustiveness check
       const _exhaustive: never = schema;

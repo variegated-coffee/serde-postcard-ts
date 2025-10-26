@@ -134,7 +134,7 @@ export function trySerialize<S extends Schema>(
     case "struct":
       return serializeStruct(schema, value as any);
     case "enum":
-      return serializeEnum(schema, value as any);
+      return serializeEnum(schema as EnumSchema<Record<string, EnumVariant>>, value as any);
     default: {
       // Exhaustiveness check
       const _exhaustive: never = schema;

@@ -29,6 +29,7 @@ import {
   tupleVariant,
   structVariant,
   type InferType,
+  type Schema,
 } from "../../src/types/schema.js";
 
 describe("Schema builders", () => {
@@ -249,5 +250,70 @@ describe("Type inference", () => {
     const _err: Result = { type: "Err", value: "error message" };
 
     expect(resultSchema.kind).toBe("enum");
+  });
+});
+
+describe("Schema type compatibility", () => {
+  it("should allow enum schemas to be assigned to Schema type", () => {
+    // This test verifies that enumType() returns a type compatible with Schema
+    const enumSchema = enumType("Status", {
+      Active: unitVariant("Active"),
+      Inactive: unitVariant("Inactive"),
+    });
+
+    // This should not cause a type error
+    const schemaVar: Schema = enumSchema;
+
+    expect(schemaVar.kind).toBe("enum");
+  });
+
+  it("should allow enum schemas in arrays of Schema type", () => {
+    // This test verifies that enum schemas can be used in arrays of Schema
+    const schemas: Schema[] = [
+      bool(),
+      u32(),
+      string(),
+      enumType("Color", {
+        Red: unitVariant("Red"),
+        Green: unitVariant("Green"),
+        Blue: unitVariant("Blue"),
+      }),
+      struct({ name: string() }),
+    ];
+
+    expect(schemas).toHaveLength(5);
+    expect(schemas[3]?.kind).toBe("enum");
+  });
+
+  it("should allow enum schemas to be passed to functions accepting Schema", () => {
+    // This test verifies that enum schemas can be passed to functions with Schema parameters
+    function processSchema(schema: Schema): string {
+      return schema.kind;
+    }
+
+    const enumSchema = enumType("Message", {
+      Quit: unitVariant("Quit"),
+      Echo: newtypeVariant("Echo", string()),
+    });
+
+    const result = processSchema(enumSchema);
+    expect(result).toBe("enum");
+  });
+
+  it("should allow nested schemas with enums", () => {
+    // This test verifies that enums work in nested schema contexts
+    const messageSchema = enumType("Message", {
+      Text: newtypeVariant("Text", string()),
+      Number: newtypeVariant("Number", u32()),
+    });
+
+    // Using enum schema in a struct field
+    const wrapperSchema = struct({
+      id: u64(),
+      message: messageSchema,
+    });
+
+    expect(wrapperSchema.kind).toBe("struct");
+    expect(wrapperSchema.fields.message.kind).toBe("enum");
   });
 });

@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2025-10-26
+
+### Fixed
+
+- Fixed TypeScript type compatibility issue where `EnumSchema` instances created with `enumType()` could not be assigned to the `Schema` type. The Schema union type now accepts enum schemas with specific variant object types (e.g., `{ Active: ..., Inactive: ... }`) instead of only the generic `Record<string, EnumVariant>` type.
+
+### Changed
+
+- Modified `Schema` type definition to use structural typing for enum schemas, improving type variance handling while maintaining runtime type safety through the `enumType()` function.
+
 ## [0.1.0] - 2025-10-25
 
 ### Added
@@ -25,4 +35,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rust test fixtures for cross-platform compatibility verification
 - Comprehensive documentation and usage examples
 
+[0.1.1]: https://github.com/variegated-coffee/serde-postcard-ts/releases/tag/v0.1.1
 [0.1.0]: https://github.com/variegated-coffee/serde-postcard-ts/releases/tag/v0.1.0
