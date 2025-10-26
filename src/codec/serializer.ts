@@ -449,6 +449,9 @@ function serializeTuple<T extends readonly Schema[]>(
   // Serialize each item (no length prefix for tuples)
   for (let i = 0; i < schema.items.length; i++) {
     const itemSchema = schema.items[i];
+    // Schema union uses structural typing with `any` for type parameters to handle variance,
+    // so we need to cast itemValue which comes from the structural type back to the typed schema
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const itemValue = value[i];
 
     if (itemSchema === undefined) {
@@ -492,6 +495,9 @@ function serializeTupleStruct<T extends readonly Schema[]>(
 
   for (let i = 0; i < schema.items.length; i++) {
     const itemSchema = schema.items[i];
+    // Schema union uses structural typing with `any` for type parameters to handle variance,
+    // so we need to cast itemValue which comes from the structural type back to the typed schema
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const itemValue = value[i];
 
     if (itemSchema === undefined) {

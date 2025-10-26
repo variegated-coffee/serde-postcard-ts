@@ -672,6 +672,9 @@ function deserializeEnum<V extends Record<string, EnumVariant>>(
       currentOffset += valueResult.value.bytesRead;
 
       return ok({
+        // Schema union uses structural typing with `any` for type parameters to handle variance,
+        // so we need to cast the enum value back to the correctly typed enum variant
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         value: { type: variantName, value: valueResult.value.value } as {
           [K in keyof V]: V[K] extends UnitVariantSchema
             ? { type: K }

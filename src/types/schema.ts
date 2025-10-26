@@ -179,22 +179,23 @@ export type Schema =
   | UnitSchema
   | UnitStructSchema
   // Use structural typing for all generic schema types to handle variance
+  // The _type property is required for InferType to work correctly
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "option"; readonly inner: any }
+  | { readonly kind: "option"; readonly inner: any; readonly _type?: any }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "newtype_struct"; readonly name: string; readonly inner: any }
+  | { readonly kind: "newtype_struct"; readonly name: string; readonly inner: any; readonly _type?: any }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "seq"; readonly item: any }
+  | { readonly kind: "seq"; readonly item: any; readonly _type?: any }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "tuple"; readonly items: readonly any[] }
+  | { readonly kind: "tuple"; readonly items: readonly any[]; readonly _type?: any }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "tuple_struct"; readonly name: string; readonly items: readonly any[] }
+  | { readonly kind: "tuple_struct"; readonly name: string; readonly items: readonly any[]; readonly _type?: any }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "map"; readonly key: any; readonly value: any }
+  | { readonly kind: "map"; readonly key: any; readonly value: any; readonly _type?: any }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "struct"; readonly fields: Record<string, any> }
+  | { readonly kind: "struct"; readonly fields: Record<string, any>; readonly _type?: any }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "enum"; readonly name: string; readonly variants: Record<string, any> };
+  | { readonly kind: "enum"; readonly name: string; readonly variants: Record<string, any>; readonly _type?: any };
 
 // ============================================================================
 // TYPE INFERENCE
@@ -202,8 +203,11 @@ export type Schema =
 
 /**
  * Infer the TypeScript type from a schema
+ *
+ * Uses optional property check (_type?) because the Schema union types
+ * have _type as an optional property for structural typing purposes
  */
-export type InferType<S extends Schema> = S extends { readonly _type: infer T } ? T : never;
+export type InferType<S extends Schema> = S extends { readonly _type?: infer T } ? T : never;
 
 /**
  * Infer tuple type from array of schemas

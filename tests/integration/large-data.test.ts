@@ -14,6 +14,7 @@ import {
   struct,
   option,
   map,
+  type Schema,
 } from "../../src/index.js";
 
 describe("Large data tests", () => {
@@ -96,7 +97,7 @@ describe("Large data tests", () => {
   describe("Deeply nested structures", () => {
     it("should round-trip 50 level nested options", () => {
       // Build schema: option(option(option(...option(u32)...)))
-      let schema = u32();
+      let schema: Schema = u32();
       for (let i = 0; i < 50; i++) {
         schema = option(schema);
       }
@@ -115,7 +116,7 @@ describe("Large data tests", () => {
 
     it("should round-trip 100 level nested structs", () => {
       // Build deeply nested struct
-      let innerSchema = u32();
+      let innerSchema: Schema = u32();
       for (let i = 0; i < 100; i++) {
         innerSchema = struct({ value: innerSchema });
       }
@@ -139,7 +140,7 @@ describe("Large data tests", () => {
 
     it("should round-trip deeply nested arrays", () => {
       // array of array of array ... of u8
-      let schema = u8();
+      let schema: Schema = u8();
       for (let i = 0; i < 20; i++) {
         schema = seq(schema);
       }
@@ -163,7 +164,7 @@ describe("Large data tests", () => {
 
     it("should round-trip mixed deep nesting", () => {
       // Alternate between struct, option, and seq
-      let schema = u32();
+      let schema: Schema = u32();
       for (let i = 0; i < 30; i++) {
         if (i % 3 === 0) {
           schema = struct({ data: schema });

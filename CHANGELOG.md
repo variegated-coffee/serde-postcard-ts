@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2025-10-26
+
+### Fixed
+
+- **CRITICAL**: Completed the fix for `InferType<T>` that was partially addressed in v0.1.2. The v0.1.2 fix added structural typing to the Schema union but forgot to include the `_type` property in those structural types, causing `InferType` to still return `never`.
+- Added `readonly _type?: any` to all structural schema types in the Schema union (option, newtype_struct, seq, tuple, tuple_struct, map, struct, enum).
+- Updated `InferType` implementation to check for optional `_type?` property instead of required `_type` property to match the structural types.
+
+### Added
+
+- Comprehensive compile-time type inference tests in `tests/types/infer-type-compile-time.test.ts` that verify `InferType<T>` returns correct types and never returns `never`.
+- Added 11 new compile-time type checking tests (total now 356 tests, was 345).
+
+### Changed
+
+- InferType conditional type now checks for `readonly _type?: infer T` instead of `readonly _type: infer T` to properly handle optional phantom type properties.
+
 ## [0.1.2] - 2025-10-26
 
 ### Fixed
@@ -54,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rust test fixtures for cross-platform compatibility verification
 - Comprehensive documentation and usage examples
 
+[0.1.3]: https://github.com/variegated-coffee/serde-postcard-ts/releases/tag/v0.1.3
 [0.1.2]: https://github.com/variegated-coffee/serde-postcard-ts/releases/tag/v0.1.2
 [0.1.1]: https://github.com/variegated-coffee/serde-postcard-ts/releases/tag/v0.1.1
 [0.1.0]: https://github.com/variegated-coffee/serde-postcard-ts/releases/tag/v0.1.0
