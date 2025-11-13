@@ -708,7 +708,7 @@ function deserializeEnum<V extends Record<string, EnumVariant>>(
       }
 
       return ok({
-        value: { type: variantName, value: items } as {
+        value: { type: variantName, value: items } as unknown as {
           [K in keyof V]: V[K] extends UnitVariantSchema
             ? { type: K }
             : V[K] extends NewtypeVariantSchema<infer T>

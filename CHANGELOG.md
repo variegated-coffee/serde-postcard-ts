@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] - 2025-11-13
+
+### Fixed
+
+- **ESLint Type Safety**: Fixed `@typescript-eslint/no-unsafe-return` errors that occurred when users returned values from `deserialize()` in their own generic functions. ESLint was incorrectly flagging these as unsafe due to `any` contamination in the Schema union type's `_type` property.
+- Removed the `_type?: any` property from structural union members in the Schema type definition (lines 184-198 in schema.ts). The `_type` property is only needed on concrete schema types for inference, not in the union members used for variance compatibility.
+- Updated type assertion in deserializer.ts to handle stricter type checking after Schema union changes.
+
+### Added
+
+- Comprehensive ESLint type safety tests in `tests/eslint/no-unsafe-return.test.ts` with 9 test cases covering generic functions, nested functions, class methods, async functions, and error handling patterns.
+- Real-world usage fixture file `src/__tests__/deserialize-return.ts` demonstrating library usage patterns that should not trigger ESLint warnings.
+
+### Changed
+
+- Schema union type now omits the `_type` property from structural members, eliminating `any` contamination while preserving variance compatibility and InferType functionality.
+- Updated Schema type documentation to explain why `_type` is omitted from structural union members.
+
+### Technical Details
+
+This fix resolves the root cause identified in the issue report where ESLint's type checker saw `_type?: any` in the Schema union and flagged any derived types as potentially unsafe. By removing this property from the structural union members while keeping it on concrete schema types, `InferType<S>` continues to work correctly (extracting from concrete types) while eliminating the `any` contamination that triggered ESLint warnings.
+
 ## [0.1.3] - 2025-10-26
 
 ### Fixed
@@ -71,6 +93,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rust test fixtures for cross-platform compatibility verification
 - Comprehensive documentation and usage examples
 
+[0.1.4]: https://github.com/variegated-coffee/serde-postcard-ts/releases/tag/v0.1.4
 [0.1.3]: https://github.com/variegated-coffee/serde-postcard-ts/releases/tag/v0.1.3
 [0.1.2]: https://github.com/variegated-coffee/serde-postcard-ts/releases/tag/v0.1.2
 [0.1.1]: https://github.com/variegated-coffee/serde-postcard-ts/releases/tag/v0.1.1

@@ -178,24 +178,26 @@ export type Schema =
   | BytesSchema
   | UnitSchema
   | UnitStructSchema
-  // Use structural typing for all generic schema types to handle variance
-  // The _type property is required for InferType to work correctly
+  // Use structural typing for generic schema types to handle variance.
+  // Note: _type is omitted here as it's only needed on concrete schema types for inference.
+  // The optional _type property from concrete types (e.g., OptionSchema<T>) is preserved
+  // during type narrowing, allowing InferType to extract the correct type.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "option"; readonly inner: any; readonly _type?: any }
+  | { readonly kind: "option"; readonly inner: any }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "newtype_struct"; readonly name: string; readonly inner: any; readonly _type?: any }
+  | { readonly kind: "newtype_struct"; readonly name: string; readonly inner: any }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "seq"; readonly item: any; readonly _type?: any }
+  | { readonly kind: "seq"; readonly item: any }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "tuple"; readonly items: readonly any[]; readonly _type?: any }
+  | { readonly kind: "tuple"; readonly items: readonly any[] }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "tuple_struct"; readonly name: string; readonly items: readonly any[]; readonly _type?: any }
+  | { readonly kind: "tuple_struct"; readonly name: string; readonly items: readonly any[] }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "map"; readonly key: any; readonly value: any; readonly _type?: any }
+  | { readonly kind: "map"; readonly key: any; readonly value: any }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "struct"; readonly fields: Record<string, any>; readonly _type?: any }
+  | { readonly kind: "struct"; readonly fields: Record<string, any> }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  | { readonly kind: "enum"; readonly name: string; readonly variants: Record<string, any>; readonly _type?: any };
+  | { readonly kind: "enum"; readonly name: string; readonly variants: Record<string, any> };
 
 // ============================================================================
 // TYPE INFERENCE
